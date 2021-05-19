@@ -1,0 +1,23 @@
+{
+  "name": "eleventy-plugin-twitch-chat",
+  "version": "0.0.0",
+  "description": "An Eleventy plugin for inserting a real-time Twitch chat into your page",
+  "main": ".eleventy.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BenDMyers/eleventy-plugin-twitch-chat.git"
+  },
+  "author": "Ben Myers <ben@benmyers.dev>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BenDMyers/eleventy-plugin-twitch-chat/issues"
+  },
+  "homepage": "https://github.com/BenDMyers/eleventy-plugin-twitch-chat#readme",
+  "dependencies": {
+    "@11ty/eleventy": "^0.12.1",
+    "jsdom": "^16.5.3"
+  }
+}
