@@ -34,25 +34,39 @@ const watchedChannels = chatbox.getAttribute('data-twitch-chat');
 
 ComfyJS.onChat = function(user, messageContents, flags, self, extra) {
 	const newMessage = document.createElement('li');
-	newMessage.setAttribute('data-twitch-message', extra.id);
 
-	// Format sender
-	const sender = document.createElement('p');
-	const senderRoles = [];
-	if (flags.broadcaster) senderRoles.push('broadcaster');
-	if (flags.mod) senderRoles.push('mod');
-	if (flags.subscriber) senderRoles.push('subscriber');
-	if (flags.vip) senderRoles.push('vip');
-	
-	sender.setAttribute('data-twitch-sender', user);
+	const sender = document.createElement('div');
+	sender.classList.add('twitch-chat-sender');
 	sender.innerHTML = user;
-	sender.setAttribute('data-twitch-sender-roles', senderRoles.join(' '));
 
-	const message = document.createElement('p');
+	const message = document.createElement('div');
 	message.innerHTML = messageContents;
+	message.classList.add('twitch-chat-message');
 
 	newMessage.appendChild(sender);
 	newMessage.appendChild(message);
+
+	newMessage.setAttribute('data-twitch-message', extra.id);
+	newMessage.setAttribute('data-twitch-sender', user);
+
+	// Apply style hooks
+	const senderRoles = [];
+	if (flags.broadcaster) senderRoles.push('broadcaster');
+	if (flags.founder) senderRoles.push('founder');
+	if (flags.mod) senderRoles.push('mod');
+	if (flags.subscriber) senderRoles.push('subscriber');
+	if (flags.vip) senderRoles.push('vip');
+	if (senderRoles.length > 0) {
+		newMessage.setAttribute('data-twitch-sender-roles', senderRoles.join(' '));
+	}
+
+	const messageStatus = [];
+	if (flags.highlighted) messageStatus.push('highlighted');
+	if (flags.customReward) messageStatus.push('customReward');
+	if (messageStatus.length > 0) {
+		newMessage.setAttribute('data-twitch-message-status', messageStatus.join(' '));
+	}
+
 	chatbox.appendChild(newMessage);
 }
 
