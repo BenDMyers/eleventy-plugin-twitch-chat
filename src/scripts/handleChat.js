@@ -70,4 +70,11 @@ ComfyJS.onChat = function(user, messageContents, flags, self, extra) {
 	chatbox.appendChild(newMessage);
 }
 
+ComfyJS.onMessageDeleted = function(id, extra) {
+	const messageToDelete = document.querySelector(`[data-twitch-message="${id}"]`);
+	if (messageToDelete) {
+		messageToDelete.remove();
+	}
+}
+
 ComfyJS.Init(watchedChannels);
