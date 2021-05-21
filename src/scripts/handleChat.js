@@ -1,36 +1,52 @@
-// const ComfyJS = {
-// 	version() {return 'Version'},
-// 	onError(error) {},
-// 	onCommand(user, command, message, flags, extra) {},
-// 	onChat(user, message, flags, self, extra) {},
-// 	onWhisper(user, message, flags, self, extra) {},
-// 	/**
-// 	 * Handles chat events when a message is deleted
-// 	 * @param {String} id - unique identifier for deleted message
-// 	 * @param {Object} extra - metadata for deletion event
-// 	 * @param {String} extra.id - unique identifier for deleted message
-// 	 * @param {String} extra.roomId - 
-// 	 */
-// 	onMessageDeleted(id, extra) {},
-// 	onJoin(user, self, extra) {},
-// 	onPart(user, self, extra) {},
-// 	onHosted(user, viewers, autohost, extra) {},
-// 	onRaid(user, viewers, extra) {},
-// 	onSub(user, message, subTierInfo, extra) {},
-// 	onResub(user, message, streakMonths, cumulativeMonths, subTierInfo, extra) {},
-// 	onSubGift(gifterUser, streakMonths, recipientUser, senderCount, subTierInfo, extra) {},
-// 	onSubMysteryGift(gifterUser, numbOfSubs, senderCount, subTierInfo, extra) {},
-// 	onGiftSubContinue(user, sender, extra) {},
-// 	onCheer(user, message, bits, flags, extra) {},
-// 	onChatMode(flags, channel) {},
-// 	onReward(user, reward, cost, message, extra) {},
-// 	onConnected(address, port, isFirstConnect) {},
-// 	onReconnect(reconnectCount) {},
-// 	Init(username, password, channels, isDebug) {}
-// };
-
 const chatbox = document.querySelector('[data-twitch-chat]');
 const watchedChannels = chatbox.getAttribute('data-twitch-chat');
+
+function htmlEntities(html) {
+	function it() {
+		return html.map(function(n, i, arr) {
+				if(n.length == 1) {
+					return n.replace(/[\u00A0-\u9999<>\&]/gim, function(i) {
+						return '&#'+i.charCodeAt(0)+';';
+						});
+				}
+				return n;
+			});
+	}
+	var isArray = Array.isArray(html);
+	if(!isArray) {
+		html = html.split('');
+	}
+	html = it(html);
+	if(!isArray) html = html.join('');
+	return html;
+}
+
+/**
+ * 
+ * @param {String} text - message contents
+ * @param {Object} emotes - object which details which emote IDs can be found at which substring ranges in the message
+ * @returns 
+ */
+function formatEmotes(text, emotes = {}) {
+	console.log({text: text + '', emotes});
+	const splitText = text.split('');
+	for(let emoteId in emotes) {
+		let e = emotes[emoteId];
+		for(let j in e) {
+			let mote = e[j];
+			if (typeof mote == 'string') {
+				mote = mote.split('-');
+				mote = [parseInt(mote[0]), parseInt(mote[1])];
+				let length =  mote[1] - mote[0];
+				let empty = Array.apply(null, new Array(length + 1)).map(function() { return '' });
+				let emoteName = text.substr(mote[0], length + 1);
+				splitText = splitText.slice(0, mote[0]).concat(empty).concat(splitText.slice(mote[1] + 1, splitText.length));
+				splitText.splice(mote[0], 1, `<img alt="${emoteName}" data-twitch-emote="${emoteName}" src="http://static-cdn.jtvnw.net/emoticons/v1/${emoteId}/3.0">`);
+			}
+		}
+	}
+	return htmlEntities(splitText).join('')
+}
 
 ComfyJS.onChat = function(user, messageContents, flags, self, extra) {
 	const newMessage = document.createElement('li');
@@ -40,7 +56,7 @@ ComfyJS.onChat = function(user, messageContents, flags, self, extra) {
 	sender.innerHTML = user;
 
 	const message = document.createElement('div');
-	message.innerHTML = messageContents;
+	message.innerHTML = formatEmotes(messageContents, extra.messageEmotes);;
 	message.classList.add('twitch-chat-message');
 
 	newMessage.appendChild(sender);
@@ -77,4 +93,4 @@ ComfyJS.onMessageDeleted = function(id, extra) {
 	}
 }
 
-ComfyJS.Init(watchedChannels);
+ComfyJS.Init(null, null, watchedChannels.split(' '));
