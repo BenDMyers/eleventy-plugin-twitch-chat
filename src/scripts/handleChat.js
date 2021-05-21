@@ -29,7 +29,7 @@ function htmlEntities(html) {
  */
 function formatEmotes(text, emotes = {}) {
 	console.log({text: text + '', emotes});
-	const splitText = text.split('');
+	let splitText = text.split('');
 	for(let emoteId in emotes) {
 		let e = emotes[emoteId];
 		for(let j in e) {
@@ -49,6 +49,7 @@ function formatEmotes(text, emotes = {}) {
 }
 
 ComfyJS.onChat = function(user, messageContents, flags, self, extra) {
+	console.log({user, messageContents, flags, self, extra});
 	const newMessage = document.createElement('li');
 
 	const sender = document.createElement('div');
@@ -81,6 +82,11 @@ ComfyJS.onChat = function(user, messageContents, flags, self, extra) {
 	if (flags.customReward) messageStatus.push('customReward');
 	if (messageStatus.length > 0) {
 		newMessage.setAttribute('data-twitch-message-status', messageStatus.join(' '));
+	}
+
+	if (extra.userColor) {
+		newMessage.setAttribute('data-twitch-sender-color', extra.userColor);
+		newMessage.setAttribute('style', `--twitch-sender-color: ${extra.userColor}`);
 	}
 
 	chatbox.appendChild(newMessage);
