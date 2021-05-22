@@ -28,7 +28,6 @@ function htmlEntities(html) {
  * @returns 
  */
 function formatEmotes(text, emotes = {}) {
-	console.log({text: text + '', emotes});
 	let splitText = text.split('');
 	for(let emoteId in emotes) {
 		let e = emotes[emoteId];
@@ -49,7 +48,6 @@ function formatEmotes(text, emotes = {}) {
 }
 
 ComfyJS.onChat = function(user, messageContents, flags, self, extra) {
-	console.log({user, messageContents, flags, self, extra});
 	const newMessage = document.createElement('li');
 
 	const sender = document.createElement('div');
