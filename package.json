@@ -1,6 +1,6 @@
 {
   "name": "eleventy-plugin-twitch-chat",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An Eleventy plugin for inserting a real-time Twitch chat into your page",
   "main": ".eleventy.js",
   "scripts": {
