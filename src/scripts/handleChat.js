@@ -60,6 +60,13 @@ ComfyJS.onChat = function(user, messageContents, flags, self, extra) {
 	message.innerHTML = formatEmotes(messageContents, extra.messageEmotes);;
 	message.classList.add('twitch-chat-message');
 
+	if (extra.userState['reply-parent-msg-id']) {
+		const replyPreview = document.createElement('small');
+		replyPreview.setAttribute('data-twitch-message-reply', extra.userState['reply-parent-msg-id']);
+		replyPreview.innerHTML = `Replying to @${extra.userState['reply-parent-display-name']}: ${extra.userState['reply-parent-msg-body']}`;
+		newMessage.appendChild(replyPreview);
+	}
+
 	newMessage.appendChild(sender);
 	newMessage.appendChild(message);
 
