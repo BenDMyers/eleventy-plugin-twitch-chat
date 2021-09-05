@@ -61,8 +61,20 @@ ComfyJS.onChat = function(user, messageContents, flags, self, extra) {
 	if (extra.userState['reply-parent-msg-id']) {
 		const replyPreview = document.createElement('small');
 		replyPreview.setAttribute('data-twitch-message-reply', extra.userState['reply-parent-msg-id']);
+
+		// "Replying to <original sender>"
+		const replyingTo = document.createElement('span');
+		replyingTo.classList.add('twitch-chat-replying-to');
+		replyingTo.innerHTML = `Replying to @${extra.userState['reply-parent-display-name']}`;
+		replyPreview.appendChild(replyingTo);
+
+		// Original message snippet
 		const repliedMessage = extra.userState['reply-parent-msg-body'].replace(/\\s/g, ' ');
-		replyPreview.innerHTML = `Replying to @${extra.userState['reply-parent-display-name']}: ${repliedMessage}`;
+		const snippet = document.createElement('span');
+		snippet.classList.add('twitch-chat-original-message');
+		snippet.innerHTML = repliedMessage;
+		replyPreview.appendChild(snippet);
+
 		newMessage.appendChild(replyPreview);
 	}
 
